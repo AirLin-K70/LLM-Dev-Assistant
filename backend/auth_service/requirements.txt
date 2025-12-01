@@ -1,0 +1,14 @@
+fastapi
+uvicorn
+python-dotenv
+sqlalchemy
+pymysql
+cryptography
+passlib[argon2]
+python-jose[cryptography]
+pydantic[email]
+prometheus-fastapi-instrumentator  #用于输出 Metrics
+opentelemetry-api                  # OpenTelemetry 核心
+opentelemetry-sdk
+opentelemetry-instrumentation-fastapi
+opentelemetry-exporter-otlp        # 用于把数据发给 Jaeger

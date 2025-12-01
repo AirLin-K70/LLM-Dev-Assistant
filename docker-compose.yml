@@ -1,0 +1,202 @@
+services:
+  # ==============================
+  #           基础设施
+  # ==============================
+  mysql:
+    image: mysql:latest
+    container_name: ai_mysql
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - ./data/mysql:/var/lib/mysql
+    networks:
+      - ai_net
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:alpine
+    container_name: ai_redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./data/redis:/data
+    networks:
+      - ai_net
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  chroma:
+    image: chromadb/chroma:latest
+    container_name: ai_chroma
+    ports:
+      - "8005:8000"
+    volumes:
+      - ./data/chroma:/chroma/chroma
+    environment:
+      - IS_PERSISTENT=TRUE
+    networks:
+      - ai_net
+
+  # ==============================
+  #            业务服务
+  # ==============================
+
+  # 1. Gateway
+  api-gateway:
+    build: ./backend/gateway
+    container_name: ai_gateway
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend/gateway:/app
+    environment:
+      - INTERNAL_API_KEY=${INTERNAL_API_KEY}
+      - LLM_SERVICE_URL=http://llm-service:8000
+      - KB_SERVICE_URL=http://kb-service:8000
+      - AUTH_SERVICE_URL=http://auth-service:8000
+      - SECRET_KEY=${SECRET_KEY}
+    depends_on:
+      - llm-service
+      - kb-service
+      - auth-service
+    networks:
+      - ai_net
+
+  # 2. Auth Service
+  auth-service:
+    build: ./backend/auth_service
+    container_name: ai_auth_service
+    ports:
+      - "8001:8000"
+    volumes:
+      - ./backend/auth_service:/app
+    environment:
+      - INTERNAL_API_KEY=${INTERNAL_API_KEY}
+      - DATABASE_URL=mysql+pymysql://${DB_USER}:${DB_PASSWORD}@mysql:3306/${DB_NAME}
+      - SECRET_KEY=${SECRET_KEY}
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - ai_net
+
+  # 3. LLM Service
+  llm-service:
+    build: ./backend/llm_service
+    container_name: ai_llm_service
+    ports:
+      - "8002:8000"
+    volumes:
+      - ./backend/llm_service:/app
+    environment:
+      - INTERNAL_API_KEY=${INTERNAL_API_KEY}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - OPENAI_BASE_URL=${OPENAI_BASE_URL}
+      - LLM_MODEL_NAME=${LLM_MODEL_NAME}
+      - KB_SERVICE_URL=http://kb-service:8000
+      - REDIS_URL=redis://redis:6379/0
+      - SESSION_TTL=3600
+    depends_on:
+      - kb-service
+      - redis
+    networks:
+      - ai_net
+
+  # 4. KB Service
+  kb-service:
+    build: ./backend/kb_service
+    container_name: ai_kb_service
+    ports:
+      - "8003:8000"
+    volumes:
+      - ./backend/kb_service:/app
+    environment:
+      - INTERNAL_API_KEY=${INTERNAL_API_KEY}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - OPENAI_BASE_URL=${OPENAI_BASE_URL}
+      - EMBEDDING_MODEL_NAME=${EMBEDDING_MODEL_NAME}
+      - CHROMA_HOST=chroma
+      - CHROMA_PORT=8000
+    depends_on:
+      - chroma
+    networks:
+      - ai_net
+
+  # ==============================
+  #        可观测性服务
+  # ==============================
+  # 1. Jaeger (追踪)
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    container_name: ai_jaeger
+    ports:
+      - "16686:16686" # Jaeger UI 面板
+      - "4317:4317"   # OTLP gRPC 接收端口
+    networks:
+      - ai_net
+
+  # 2. Prometheus (监控)
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: ai_prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./config/prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+      - ai_net
+
+  # 3. Grafana (可视化)
+  grafana:
+    image: grafana/grafana:latest
+    container_name: ai_grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin # 初始密码
+    depends_on:
+      - prometheus
+      - jaeger
+    networks:
+      - ai_net
+
+  # 4. Loki (日志存储)
+  loki:
+    image: grafana/loki:2.9.2
+    container_name: ai_loki
+    ports:
+      - "3100:3100"
+    command: -config.file=/etc/loki/local-config.yaml
+    networks:
+      - ai_net
+
+  # 5. Promtail (日志采集)
+  promtail:
+    image: grafana/promtail:2.9.2
+    container_name: ai_promtail
+    volumes:
+      # 挂载配置文件
+      - ./config/promtail.yaml:/etc/promtail/config.yml
+      # 关键：挂载宿主机的 Docker 日志目录到容器内，让 Promtail 能读取
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+    command: -config.file=/etc/promtail/config.yml
+    depends_on:
+      - loki
+    networks:
+      - ai_net
+
+networks:
+  ai_net:
+    driver: bridge

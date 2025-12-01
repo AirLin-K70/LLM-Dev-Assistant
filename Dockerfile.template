@@ -1,0 +1,32 @@
+# 基础镜像使用 Python 3.12
+FROM python:3.12-slim
+
+# 设置工作目录
+WORKDIR /app
+
+# 环境变量：防止生成 pyc 文件，并在日志中实时输出
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+
+# 更新 apt 并安装基础工具 (如 curl/git)，以防某些 Python 库编译需要
+# 对于纯 Python 的 pymysql，其实这一步可以简化，但保留 build-essential 是个好习惯
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# 复制依赖
+COPY requirements.txt .
+
+# 安装依赖 (升级 pip 以避免 Python 3.12 的兼容性警告)
+RUN pip install --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt
+
+# 复制业务代码
+COPY . .
+
+# 暴露端口
+EXPOSE 8000
+
+# 启动命令
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]

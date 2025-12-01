@@ -1,0 +1,26 @@
+[
+  {
+    "id": "doc_001",
+    "category": "LangChain基础",
+    "topic": "什么是Chain",
+    "content": "在 LangChain 中，Chain（链）是指将多个组件（如 PromptTemplate、LLM、OutputParser）连接在一起的核心概念。最基础的是 LLMChain，它接收用户输入，通过 Prompt 格式化后发送给 LLM，最后返回结果。通过 Chain，可以将复杂的任务拆解为多个步骤。",
+    "similar_questions": ["LangChain里的Chain是什么意思？", "怎么理解LangChain的链？"],
+    "source": "LangChain Official Docs"
+  },
+  {
+    "id": "doc_002",
+    "category": "RAG技术",
+    "topic": "向量数据库的作用",
+    "content": "向量数据库（Vector Database）用于存储文本的高维向量表示（Embedding）。在 RAG（检索增强生成）流程中，系统会将用户的提问转化为向量，然后在数据库中通过计算余弦相似度（Cosine Similarity），快速找出最相关的文档片段，作为上下文提供给大模型。",
+    "similar_questions": ["RAG为什么要用向量库？", "ChromaDB是用来做什么的？", "什么是Embedding存储？"],
+    "source": "AI Engineering Guide"
+  },
+  {
+    "id": "doc_003",
+    "category": "Prompt工程",
+    "topic": "Few-Shot Prompting",
+    "content": "Few-Shot Prompting（少样本提示）是一种在 Prompt 中提供少量示例（Example）来引导模型输出特定格式或风格的技术。相比于 Zero-Shot（零样本），Few-Shot 能显著提高模型在复杂任务上的表现。",
+    "similar_questions": ["什么是少样本提示？", "Few-Shot和Zero-Shot的区别？", "怎么让模型回答得更准确？"],
+    "source": "OpenAI Cookbook"
+  }
+]

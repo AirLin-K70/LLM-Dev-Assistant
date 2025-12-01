@@ -1,0 +1,18 @@
+fastapi
+uvicorn
+python-dotenv
+
+# LangChain 核心与 OpenAI 适配器
+langchain
+langchain-openai
+langchain-chroma
+langchain-community
+
+# 向量数据库客户端
+chromadb
+
+prometheus-fastapi-instrumentator  #用于输出 Metrics
+opentelemetry-api                  # OpenTelemetry 核心
+opentelemetry-sdk
+opentelemetry-instrumentation-fastapi
+opentelemetry-exporter-otlp        # 用于把数据发给 Jaeger

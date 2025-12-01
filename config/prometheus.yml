@@ -1,0 +1,11 @@
+global:
+  scrape_interval: 5s
+
+scrape_configs:
+  - job_name: 'ai-microservices'
+    static_configs:
+      - targets:
+        - 'api-gateway:8000'
+        - 'auth-service:8000'
+        - 'llm-service:8000'
+        - 'kb-service:8000'

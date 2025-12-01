@@ -1,0 +1,14 @@
+fastapi
+uvicorn
+python-dotenv
+httpx              # 用于调用 kb-service
+langchain
+langchain-openai   # 兼容阿里云
+pydantic
+redis
+langchain-community
+prometheus-fastapi-instrumentator  #用于输出 Metrics
+opentelemetry-api                  # OpenTelemetry 核心
+opentelemetry-sdk
+opentelemetry-instrumentation-fastapi
+opentelemetry-exporter-otlp        # 用于把数据发给 Jaeger
