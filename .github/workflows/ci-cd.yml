@@ -1,19 +1,84 @@
-- name: 设置 Python 环境
+name: AI-Bot CI/CD Pipeline
+
+# 触发条件：当推送到 main 分支，或提交 Pull Request 时触发
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  # === Job 1: 代码质量检查与测试 (CI) ===
+  test-and-lint:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.12"]
+
+    steps:
+    - name: 拉取代码 (Checkout)
+      uses: actions/checkout@v3
+
+    - name: 设置 Python 环境
       uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
 
-    # 👇👇👇 【插入这一段】 👇👇👇
     - name: 🔍 调试 - 打印所有文件结构
       run: |
         echo "当前工作目录:"
         pwd
         echo "文件列表:"
         ls -R
-    # 👆👆👆 【插入结束】 👆👆👆
 
     - name: 安装依赖
       run: |
         python -m pip install --upgrade pip
+        # 安装网关的依赖用于测试
         pip install -r backend/gateway/requirements.txt
-        pip install httpx pytest
+        pip install httpx pytest # 测试工具
+
+    - name: 运行代码风格检查 (Lint)
+      run: |
+        # 简单检查是否有语法错误 (flake8 需要先安装，这里演示用简单的编译检查)
+        python -m compileall backend/
+
+    - name: 运行单元测试
+      # 设置 PYTHONPATH 确保能找到 config.py
+      env:
+        PYTHONPATH: ${{ github.workspace }}/backend/gateway
+        INTERNAL_API_KEY: "test_key" # 模拟环境变量
+        SECRET_KEY: "test_secret"
+      run: |
+        pytest tests/test_basic.py
+
+  # === Job 2: 构建与部署模拟 (CD) ===
+  build-and-deploy:
+    needs: test-and-lint # 只有测试通过了才执行这一步
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: 拉取代码
+      uses: actions/checkout@v3
+
+    - name: 设置 Docker Buildx
+      uses: docker/setup-buildx-action@v2
+
+    - name: 构建 Docker 镜像 (Gateway)
+      uses: docker/build-push-action@v4
+      with:
+        context: .
+        file: backend/gateway/Dockerfile
+        push: false # 演示项目暂时不推送到 DockerHub，只验证构建是否成功
+        tags: ai-gateway:latest
+
+    - name: 验证 Docker Compose 配置
+      run: |
+        # 检查 docker-compose.yml 语法是否正确
+        docker compose config
+      env:
+        # 注入必要的环境变量用于 config 检查
+        OPENAI_API_KEY: "sk-test"
+        DB_PASSWORD: "test"
+        SECRET_KEY: "test"
+        INTERNAL_API_KEY: "test"
