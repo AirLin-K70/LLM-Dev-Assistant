@@ -1,0 +1,13 @@
+# Python
+__pycache__/
+*.pyc
+venv/
+.venv/
+.env
+
+# Node.js (前端依赖，千万别传，体积巨大)
+frontend/node_modules/
+frontend/dist/
+
+# Docker / System
+.DS_Store
