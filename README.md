@@ -60,14 +60,16 @@
 <img width="830" height="666" alt="image" src="https://github.com/user-attachments/assets/a0c7fa29-dfef-4fa1-ba2f-00b046d7019c" />
 
 ## 🛠️ 技术栈 (Tech Stack)
-模块,技术选型,说明
-前端,"Vue 3, TypeScript, Element Plus",现代化响应式 UI，Markdown 渲染
-网关,"FastAPI, FastAPI-Limiter",统一入口，负责鉴权、限流、路由分发
-核心服务,"Python 3.12, LangChain",RAG 逻辑编排，Prompt Engineering
-数据存储,"MySQL 9.x, Redis, ChromaDB",关系型数据、会话缓存、向量数据库
-大模型,OpenAI SDK (阿里云百炼),接入 Qwen-Plus 等先进 LLM
-监控,"Prometheus, Grafana, Jaeger",Metrics 指标监控与分布式链路追踪
-运维,"Docker, GitHub Actions",容器化部署与自动化 CI/CD
+## 技术架构
+| 模块 | 技术选型 | 说明 |
+|------|----------|------|
+| 前端 | Vue 3, TypeScript, Element Plus | 现代化响应式 UI，Markdown 渲染 |
+| 网关 | FastAPI, FastAPI-Limiter | 统一入口，负责鉴权、限流、路由分发 |
+| 核心服务 | Python 3.12, LangChain | RAG 逻辑编排，Prompt Engineering |
+| 数据存储 | MySQL 9.x, Redis, ChromaDB | 关系型数据、会话缓存、向量数据库 |
+| 大模型 | OpenAI SDK (阿里云百炼) | 接入 Qwen-Plus 等先进 LLM |
+| 监控 | Prometheus, Grafana, Jaeger | Metrics 指标监控与分布式链路追踪 |
+| 运维 | Docker, GitHub Actions | 容器化部署与自动化 CI/CD |
 
 ## 🚀 快速开始 (Quick Start)
 
@@ -95,6 +97,7 @@ npm run dev
 访问浏览器：http://localhost:5173 即可开始使用！
 
 ## 📂 目录结构 (Directory Structure)
+```txt
 LLM-Dev-Assistant/
 ├── backend/                 # 后端微服务代码
 │   ├── gateway/             # API 网关
@@ -131,4 +134,5 @@ Jaeger (链路追踪): http://localhost:16686
 
 ## 📄 版权说明 (License)
 ### 本项目采用 MIT License 开源。
+
 
