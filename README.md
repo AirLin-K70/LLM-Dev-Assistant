@@ -57,27 +57,78 @@
 ## 🏗️ 系统架构 (Architecture)
 
 系统采用典型的微服务架构，通过 Docker Compose 进行编排。
+<img width="830" height="666" alt="image" src="https://github.com/user-attachments/assets/a0c7fa29-dfef-4fa1-ba2f-00b046d7019c" />
 
-```mermaid
-graph TD
-    User[用户 (Browser)] -->|HTTP/WebSocket| Frontend[前端 (Vue 3 + TS)]
-    Frontend -->|RESTful API| Gateway[API 网关 (FastAPI)]
-    
-    subgraph "可观测性 (Observability)"
-        Prometheus --> Gateway & Services
-        Jaeger --> Gateway & Services
-        Grafana --> Prometheus & Jaeger
-    end
+## 🛠️ 技术栈 (Tech Stack)
+模块,技术选型,说明
+前端,"Vue 3, TypeScript, Element Plus",现代化响应式 UI，Markdown 渲染
+网关,"FastAPI, FastAPI-Limiter",统一入口，负责鉴权、限流、路由分发
+核心服务,"Python 3.12, LangChain",RAG 逻辑编排，Prompt Engineering
+数据存储,"MySQL 9.x, Redis, ChromaDB",关系型数据、会话缓存、向量数据库
+大模型,OpenAI SDK (阿里云百炼),接入 Qwen-Plus 等先进 LLM
+监控,"Prometheus, Grafana, Jaeger",Metrics 指标监控与分布式链路追踪
+运维,"Docker, GitHub Actions",容器化部署与自动化 CI/CD
 
-    subgraph "后端微服务集群 (Docker Network)"
-        Gateway -->|鉴权 & 限流| Auth[认证服务]
-        Gateway -->|流式转发| LLM[大模型服务]
-        Gateway -->|管理转发| KB[知识库服务]
-        
-        LLM -->|RAG 检索| KB
-        LLM -->|会话记忆| Redis[(Redis 缓存)]
-        
-        Auth -->|读写用户| MySQL[(MySQL 8.0)]
-        KB -->|向量检索| Chroma[(ChromaDB)]
-    end
+## 🚀 快速开始 (Quick Start)
+
+### 1. 环境准备
+确保本地已安装：
+  Docker Desktop
+  Node.js (v18+) & npm
+
+### 2. 克隆项目
+git clone [https://github.com/your-username/LLM-Dev-Assistant.git](https://github.com/AirLin-K70/LLM-Dev-Assistant.git)
+cd LLM-Dev-Assistant
+
+### 3. 配置环境变量
+复制 .env填入你的 API Key：
+
+### 4. 启动微服务集群
+使用 Docker Compose 一键启动后端所有服务（包括数据库和监控组件）：
+docker-compose up -d --build
+首次启动需要下载镜像，请耐心等待 3-5 分钟。
+
+### 5. 启动前端
+cd frontend
+npm install
+npm run dev
+访问浏览器：http://localhost:5173 即可开始使用！
+
+## 📂 目录结构 (Directory Structure)
+LLM-Dev-Assistant/
+├── backend/                 # 后端微服务代码
+│   ├── gateway/             # API 网关
+│   ├── auth_service/        # 认证中心
+│   ├── llm_service/         # RAG 与对话核心
+│   └── kb_service/          # 知识库管理
+├── frontend/                # Vue 3 前端代码
+├── config/                  # 监控组件配置 (Prometheus, Promtail)
+├── data/                    # 数据库持久化目录
+├── tests/                   # 自动化测试脚本
+├── docker-compose.yml       # 容器编排文件
+└── .github/workflows/       # CI/CD 流水线配置
+
+## 🛡️ 安全特性详情
+### 1. 网关限流 (Rate Limiting):
+  策略：每用户/IP 每分钟限制 10 次对话请求。
+  实现：基于 fastapi-limiter 和 Redis 滑动窗口算法。
+
+### 2. 零信任通信 (Zero Trust):
+  策略：微服务之间（如 Gateway -> Auth）的调用必须携带 X-Internal-Key。
+  效果：即使内网某个容器被攻破，攻击者也无法随意调用其他敏感服务。
+
+### 3. 身份验证:
+  使用 OAuth2 + JWT (JSON Web Tokens) 标准流程。
+  密码采用 Argon2 强哈希算法存储。
+
+## 📊 监控平台访问
+### 项目启动后，你可以通过以下地址访问监控面板：
+Grafana (可视化看板): http://localhost:3000 (默认账号/密码: admin/admin)
+
+Prometheus (指标): http://localhost:9090
+
+Jaeger (链路追踪): http://localhost:16686
+
+## 📄 版权说明 (License)
+### 本项目采用 MIT License 开源。
 
