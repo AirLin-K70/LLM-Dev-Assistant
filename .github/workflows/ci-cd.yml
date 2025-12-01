@@ -1,0 +1,19 @@
+- name: 设置 Python 环境
+  uses: actions/setup-python@v4
+  with:
+    python-version: ${{ matrix.python-version }}
+
+# 👇👇👇 【插入这一段】 👇👇👇
+- name: 🔍 调试 - 打印所有文件结构
+  run: |
+    echo "当前工作目录:"
+    pwd
+    echo "文件列表:"
+    ls -R
+# 👆👆👆 【插入结束】 👆👆👆
+
+- name: 安装依赖
+  run: |
+    python -m pip install --upgrade pip
+    pip install -r backend/gateway/requirements.txt
+    pip install httpx pytest
