@@ -49,8 +49,7 @@
 
 ### 2. Grafana 监控大屏
 > 实时展示 QPS、P99 延迟、服务错误率及 Docker 容器日志。
-<img width="2362" height="1400" alt="image" src="https://github.com/user-attachments/assets/6eb2cd4a-9c36-49e0-af3f-b85f766b9879" />
-
+<img width="3014" height="1654" alt="image" src="https://github.com/user-attachments/assets/c1aa25ff-15a1-4743-86b4-93308dc0fb0a" />
 
 ---
 
@@ -135,6 +134,7 @@ Jaeger (链路追踪): http://localhost:16686
 
 ## 📄 版权说明 (License)
 ### 本项目采用 MIT License 开源。
+
 
 
 
