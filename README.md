@@ -74,26 +74,26 @@
 
 ### 1. 环境准备
 确保本地已安装：
-  Docker Desktop
-  Node.js (v18+) & npm
+*  Docker Desktop
+*  Node.js (v18+) & npm
 
 ### 2. 克隆项目
-* ** git clone [https://github.com/your-username/LLM-Dev-Assistant.git](https://github.com/AirLin-K70/LLM-Dev-Assistant.git)
-* ** cd LLM-Dev-Assistant
+* git clone [https://github.com/your-username/LLM-Dev-Assistant.git](https://github.com/AirLin-K70/LLM-Dev-Assistant.git)
+* cd LLM-Dev-Assistant
 
 ### 3. 配置环境变量
 复制 .env填入你的 API Key：
 
 ### 4. 启动微服务集群
-使用 Docker Compose 一键启动后端所有服务（包括数据库和监控组件）：
-docker-compose up -d --build
-首次启动需要下载镜像，请耐心等待 3-5 分钟。
+* 使用 Docker Compose 一键启动后端所有服务（包括数据库和监控组件）：
+* docker-compose up -d --build
+* 首次启动需要下载镜像，请耐心等待 3-5 分钟。
 
 ### 5. 启动前端
-cd frontend
-npm install
-npm run dev
-访问浏览器：http://localhost:5173 即可开始使用！
+* cd frontend
+* npm install
+* npm run dev
+* 访问浏览器：http://localhost:5173 即可开始使用！
 
 ## 📂 目录结构 (Directory Structure)
 ```txt
@@ -113,27 +113,26 @@ LLM-Dev-Assistant/
 
 ## 🛡️ 安全特性详情
 ### 1. 网关限流 (Rate Limiting):
-  策略：每用户/IP 每分钟限制 10 次对话请求。
-  实现：基于 fastapi-limiter 和 Redis 滑动窗口算法。
+*  策略：每用户/IP 每分钟限制 10 次对话请求。
+*  实现：基于 fastapi-limiter 和 Redis 滑动窗口算法。
 
 ### 2. 零信任通信 (Zero Trust):
-  策略：微服务之间（如 Gateway -> Auth）的调用必须携带 X-Internal-Key。
-  效果：即使内网某个容器被攻破，攻击者也无法随意调用其他敏感服务。
+*  策略：微服务之间（如 Gateway -> Auth）的调用必须携带 X-Internal-Key。
+*  效果：即使内网某个容器被攻破，攻击者也无法随意调用其他敏感服务。
 
 ### 3. 身份验证:
-  使用 OAuth2 + JWT (JSON Web Tokens) 标准流程。
-  密码采用 Argon2 强哈希算法存储。
+*  使用 OAuth2 + JWT (JSON Web Tokens) 标准流程。
+*  密码采用 Argon2 强哈希算法存储。
 
 ## 📊 监控平台访问
 ### 项目启动后，你可以通过以下地址访问监控面板：
-Grafana (可视化看板): http://localhost:3000 (默认账号/密码: admin/admin)
-
-Prometheus (指标): http://localhost:9090
-
-Jaeger (链路追踪): http://localhost:16686
+* Grafana (可视化看板): http://localhost:3000 (默认账号/密码: admin/admin)
+* Prometheus (指标): http://localhost:9090
+* Jaeger (链路追踪): http://localhost:16686
 
 ## 📄 版权说明 (License)
 ### 本项目采用 MIT License 开源。
+
 
 
 
