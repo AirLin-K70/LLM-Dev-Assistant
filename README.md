@@ -56,7 +56,7 @@
 ## 🏗️ 系统架构 (Architecture)
 
 系统采用典型的微服务架构，通过 Docker Compose 进行编排。
-<img width="830" height="666" alt="image" src="https://github.com/user-attachments/assets/a0c7fa29-dfef-4fa1-ba2f-00b046d7019c" />
+<img width="1906" height="1434" alt="image" src="https://github.com/user-attachments/assets/9342379b-2236-432e-af47-3d42651751a6" />
 
 ## 🛠️ 技术栈 (Tech Stack)
 ## 技术架构
@@ -134,6 +134,7 @@ Jaeger (链路追踪): http://localhost:16686
 
 ## 📄 版权说明 (License)
 ### 本项目采用 MIT License 开源。
+
 
 
 
