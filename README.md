@@ -78,8 +78,8 @@
   Node.js (v18+) & npm
 
 ### 2. 克隆项目
-git clone [https://github.com/your-username/LLM-Dev-Assistant.git](https://github.com/AirLin-K70/LLM-Dev-Assistant.git)/n
-cd LLM-Dev-Assistant
+* ** git clone [https://github.com/your-username/LLM-Dev-Assistant.git](https://github.com/AirLin-K70/LLM-Dev-Assistant.git)
+* ** cd LLM-Dev-Assistant
 
 ### 3. 配置环境变量
 复制 .env填入你的 API Key：
@@ -134,6 +134,7 @@ Jaeger (链路追踪): http://localhost:16686
 
 ## 📄 版权说明 (License)
 ### 本项目采用 MIT License 开源。
+
 
 
 
